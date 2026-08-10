@@ -1,0 +1,60 @@
+id: web-foothold-lab
+name: Web foothold evidence exercise
+description: >-
+  Document a controlled path from service discovery to evidence collection in a
+  private web lab, with explicit stop conditions and cleanup after every phase.
+
+scope:
+  targets:
+    - 192.168.56.10
+    - api.target.test
+  exclusions:
+    - 192.168.56.1
+
+safety:
+  stop_conditions:
+    - Stop if a target resolves outside the declared private lab.
+    - Stop if the service becomes unavailable for two consecutive checks.
+    - Stop before accessing data unrelated to the exercise objective.
+
+steps:
+  - id: service-discovery
+    name: Identify exposed lab services
+    technique: T1046
+    tactic: Discovery
+    objective: Record the ports and protocols intentionally exposed by the fixture.
+    expected_evidence:
+      - discovery-output.txt
+      - target-timestamp.txt
+    cleanup: Remove temporary scan output after its hash is registered.
+
+  - id: web-enumeration
+    name: Enumerate fixture routes
+    technique: T1083
+    tactic: Discovery
+    objective: Map the known web routes and identify the intended training endpoint.
+    expected_evidence:
+      - route-map.json
+      - response-headers.txt
+    cleanup: Delete session cookies and temporary response bodies.
+
+  - id: controlled-access
+    name: Exercise the synthetic access path
+    technique: T1190
+    tactic: Initial Access
+    objective: Demonstrate the predefined lab access path and capture minimal evidence.
+    expected_evidence:
+      - request.txt
+      - response-redacted.txt
+    cleanup: Revert the fixture state and invalidate the lab session.
+
+  - id: evidence-package
+    name: Package findings and telemetry
+    technique: T1074.001
+    tactic: Collection
+    objective: Correlate operator evidence with lab telemetry for the final report.
+    expected_evidence:
+      - evidence-manifest.json
+      - telemetry-window.json
+    cleanup: Preserve only hashed and redacted evidence artifacts.
+
