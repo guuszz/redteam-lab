@@ -1,0 +1,181 @@
+{
+  "name": "Web foothold evidence exercise — Red Team Lab",
+  "versions": {
+    "attack": "19.2",
+    "navigator": "5.3.2",
+    "layer": "4.5"
+  },
+  "domain": "enterprise-attack",
+  "description": "Document a controlled path from service discovery to evidence collection in a private web lab, with explicit stop conditions and cleanup after every phase.",
+  "sorting": 0,
+  "layout": {
+    "layout": "side",
+    "showID": true,
+    "showName": true,
+    "showAggregateScores": false,
+    "countUnscored": false,
+    "aggregateFunction": "average",
+    "expandedSubtechniques": "annotated"
+  },
+  "hideDisabled": false,
+  "techniques": [
+    {
+      "techniqueID": "T1046",
+      "tactic": "discovery",
+      "score": 100,
+      "color": "#22c55e",
+      "comment": "Identify exposed lab services — passed",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Step",
+          "value": "service-discovery"
+        },
+        {
+          "name": "Status",
+          "value": "passed"
+        },
+        {
+          "name": "Objective",
+          "value": "Record the ports and protocols intentionally exposed by the fixture."
+        }
+      ],
+      "links": [
+        {
+          "label": "MITRE ATT&CK technique",
+          "url": "https://attack.mitre.org/techniques/T1046/"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1083",
+      "tactic": "discovery",
+      "score": 100,
+      "color": "#22c55e",
+      "comment": "Enumerate fixture routes — passed",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Step",
+          "value": "web-enumeration"
+        },
+        {
+          "name": "Status",
+          "value": "passed"
+        },
+        {
+          "name": "Objective",
+          "value": "Map the known web routes and identify the intended training endpoint."
+        }
+      ],
+      "links": [
+        {
+          "label": "MITRE ATT&CK technique",
+          "url": "https://attack.mitre.org/techniques/T1083/"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1190",
+      "tactic": "initial-access",
+      "score": 100,
+      "color": "#22c55e",
+      "comment": "Exercise the synthetic access path — passed",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Step",
+          "value": "controlled-access"
+        },
+        {
+          "name": "Status",
+          "value": "passed"
+        },
+        {
+          "name": "Objective",
+          "value": "Demonstrate the predefined lab access path and capture minimal evidence."
+        }
+      ],
+      "links": [
+        {
+          "label": "MITRE ATT&CK technique",
+          "url": "https://attack.mitre.org/techniques/T1190/"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1074.001",
+      "tactic": "collection",
+      "score": 40,
+      "color": "#f59e0b",
+      "comment": "Package findings and telemetry — blocked",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "Step",
+          "value": "evidence-package"
+        },
+        {
+          "name": "Status",
+          "value": "blocked"
+        },
+        {
+          "name": "Objective",
+          "value": "Correlate operator evidence with lab telemetry for the final report."
+        }
+      ],
+      "links": [
+        {
+          "label": "MITRE ATT&CK technique",
+          "url": "https://attack.mitre.org/techniques/T1074/001/"
+        }
+      ]
+    }
+  ],
+  "gradient": {
+    "colors": [
+      "#334155",
+      "#f59e0b",
+      "#22c55e"
+    ],
+    "minValue": 0,
+    "maxValue": 100
+  },
+  "legendItems": [
+    {
+      "label": "Passed",
+      "color": "#22c55e"
+    },
+    {
+      "label": "Failed",
+      "color": "#ef4444"
+    },
+    {
+      "label": "Blocked",
+      "color": "#f59e0b"
+    },
+    {
+      "label": "Skipped",
+      "color": "#64748b"
+    },
+    {
+      "label": "Pending",
+      "color": "#334155"
+    }
+  ],
+  "showTacticRowBackground": true,
+  "tacticRowBackground": "#0f172a",
+  "selectTechniquesAcrossTactics": true,
+  "selectSubtechniquesWithParent": false,
+  "selectVisibleTechniques": false,
+  "metadata": [
+    {
+      "name": "Scenario",
+      "value": "web-foothold-lab"
+    },
+    {
+      "name": "Generator",
+      "value": "Red Team Lab 0.3.0"
+    }
+  ]
+}

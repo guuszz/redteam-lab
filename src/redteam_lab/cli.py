@@ -11,6 +11,7 @@ from .journal import read_journal, record_step, scenario_status
 from .models import Scenario, load_scenario
 from .rendering import render_plan, scenario_digest
 from .validation import validate_scenario
+from .visualization import write_dashboard, write_navigator_layer
 
 
 def parser() -> argparse.ArgumentParser:
@@ -32,7 +33,7 @@ def parser() -> argparse.ArgumentParser:
     status.add_argument("scenario")
     status.add_argument("--journal", default="evidence/runs/journal.ndjson")
     export = commands.add_parser("export", help="export confirmed findings")
-    export.add_argument("format", choices=["redreport"])
+    export.add_argument("format", choices=["redreport", "navigator"])
     export.add_argument("scenario")
     export.add_argument("--journal", default="evidence/runs/journal.ndjson")
     export.add_argument("--output", "-o", required=True)
@@ -40,6 +41,10 @@ def parser() -> argparse.ArgumentParser:
     export.add_argument("--start-date", type=date.fromisoformat, default=date.today())
     export.add_argument("--end-date", type=date.fromisoformat, default=date.today())
     export.add_argument("--force", action="store_true")
+    dashboard = commands.add_parser("dashboard", help="render an offline coverage dashboard")
+    dashboard.add_argument("scenario")
+    dashboard.add_argument("--journal", default="evidence/runs/journal.ndjson")
+    dashboard.add_argument("--output", "-o", required=True)
     return root
 
 
@@ -77,6 +82,12 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{step_id:24} {value}")
         return 0
     if args.command == "export":
+        if args.format == "navigator":
+            output = write_navigator_layer(
+                scenario, read_journal(args.journal), args.output
+            )
+            print(f"EXPORTED: {output.resolve()}")
+            return 0
         try:
             files = export_redreport(
                 scenario,
@@ -92,6 +103,10 @@ def main(argv: list[str] | None = None) -> int:
             return 2
         for path in files:
             print(f"EXPORTED: {path.resolve()}")
+        return 0
+    if args.command == "dashboard":
+        output = write_dashboard(scenario, read_journal(args.journal), args.output)
+        print(f"DASHBOARD: {output.resolve()}")
         return 0
     return 1
 
