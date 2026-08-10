@@ -7,4 +7,8 @@ build/
 *.egg-info/
 evidence/runs/
 reports/generated/
+*.key
+*.pem
+!docs/demo-public.pem
+.rtl/
 

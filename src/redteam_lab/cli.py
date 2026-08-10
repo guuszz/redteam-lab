@@ -7,6 +7,7 @@ from datetime import date
 from pathlib import Path
 
 from .exporters import ExportError, export_redreport
+from .integrity import IntegrityError, generate_keypair, seal_evidence, verify_evidence
 from .journal import read_journal, record_step, scenario_status
 from .models import Scenario, load_scenario
 from .rendering import render_plan, scenario_digest
@@ -45,6 +46,18 @@ def parser() -> argparse.ArgumentParser:
     dashboard.add_argument("scenario")
     dashboard.add_argument("--journal", default="evidence/runs/journal.ndjson")
     dashboard.add_argument("--output", "-o", required=True)
+    keygen = commands.add_parser("keygen", help="generate an Ed25519 signing key pair")
+    keygen.add_argument("--private-key", required=True)
+    keygen.add_argument("--public-key", required=True)
+    keygen.add_argument("--force", action="store_true")
+    seal = commands.add_parser("seal", help="create a signed evidence package")
+    seal.add_argument("scenario")
+    seal.add_argument("--journal", default="evidence/runs/journal.ndjson")
+    seal.add_argument("--output", "-o", required=True)
+    seal.add_argument("--private-key", required=True)
+    verify = commands.add_parser("verify", help="verify a signed evidence package")
+    verify.add_argument("manifest")
+    verify.add_argument("--public-key", required=True)
     return root
 
 
@@ -61,6 +74,30 @@ def checked_scenario(path: str) -> Scenario:
 
 def main(argv: list[str] | None = None) -> int:
     args = parser().parse_args(argv)
+    if args.command == "keygen":
+        try:
+            fingerprint = generate_keypair(
+                args.private_key, args.public_key, force=args.force
+            )
+        except IntegrityError as exc:
+            print(f"ERROR: {exc}", file=sys.stderr)
+            return 2
+        print(f"KEYPAIR: public_key_sha256={fingerprint}")
+        return 0
+    if args.command == "verify":
+        try:
+            result = verify_evidence(args.manifest, args.public_key)
+        except IntegrityError as exc:
+            print(f"INVALID: {exc}", file=sys.stderr)
+            return 2
+        print(
+            "VERIFIED: "
+            f"scenario={result['scenario_id']} "
+            f"artifacts={result['artifacts']} "
+            f"journal_entries={result['journal_entries']} "
+            f"public_key_sha256={result['public_key_sha256']}"
+        )
+        return 0
     scenario = checked_scenario(args.scenario)
     if args.command == "validate":
         print(f"VALID: {scenario.id} ({len(scenario.steps)} steps)")
@@ -107,6 +144,16 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "dashboard":
         output = write_dashboard(scenario, read_journal(args.journal), args.output)
         print(f"DASHBOARD: {output.resolve()}")
+        return 0
+    if args.command == "seal":
+        try:
+            manifest = seal_evidence(
+                scenario, args.journal, args.output, args.private_key
+            )
+        except IntegrityError as exc:
+            print(f"ERROR: {exc}", file=sys.stderr)
+            return 2
+        print(f"SEALED: {manifest.resolve()}")
         return 0
     return 1
 

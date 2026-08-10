@@ -29,6 +29,7 @@ O MVP oferece:
 - exportação de achados confirmados para um projeto RedReport completo.
 - layer JSON compatível com ATT&CK Navigator 5.3.2 / formato 4.5;
 - dashboard HTML offline com cobertura e status por tática.
+- pacotes de evidência assinados com Ed25519 e verificáveis offline.
 
 ## Fluxo
 
@@ -143,6 +144,46 @@ rtl dashboard scenarios/web-foothold.yml \
 
 O dashboard é um único arquivo HTML, sem JavaScript ou dependências externas. Ele mostra cobertura concluída, contagem por status, escopo e cartões agrupados por tática.
 
+### 8. Gerar uma chave de assinatura
+
+```bash
+rtl keygen \
+  --private-key .rtl/private.pem \
+  --public-key .rtl/public.pem
+```
+
+A CLI retorna o fingerprint SHA-256 da chave pública. A chave privada utiliza PKCS#8 PEM e deve permanecer fora do repositório.
+
+### 9. Selar e verificar evidências
+
+```bash
+rtl seal scenarios/web-foothold.yml \
+  --journal evidence/runs/journal.ndjson \
+  --output reports/generated/sealed-package \
+  --private-key .rtl/private.pem
+
+rtl verify reports/generated/sealed-package/manifest.json \
+  --public-key .rtl/public.pem
+```
+
+O pacote contém:
+
+```text
+sealed-package/
+├── manifest.json       # manifesto canônico + assinatura Ed25519
+├── journal.ndjson      # cópia portátil com caminhos relativos
+└── artifacts/          # evidências verificadas e copiadas
+```
+
+Durante a verificação, a CLI confirma assinatura, fingerprint da chave, SHA-256 e tamanho de cada arquivo, hash do journal e confinamento dos caminhos dentro do pacote. Qualquer alteração faz o comando terminar com status inválido.
+
+Um pacote demonstrativo pode ser verificado com:
+
+```bash
+rtl verify docs/demo-evidence-package/manifest.json \
+  --public-key docs/demo-public.pem
+```
+
 ## Estrutura de cenário
 
 ```yaml
@@ -194,7 +235,7 @@ A CI executa os três gates em cada Pull Request.
 - [x] exportador de findings compatível com RedReport;
 - [x] matriz ATT&CK Navigator por cenário;
 - [x] dashboard HTML local de cobertura e progresso;
-- [ ] manifest assinado de evidências;
+- [x] manifest assinado de evidências com Ed25519;
 - [ ] adaptadores para logs Windows, Linux e aplicação web;
 
 ## Licença

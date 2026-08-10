@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "algorithm": "Ed25519",
+  "scenario_id": "web-foothold-lab",
+  "created_at": "2026-08-10T03:02:11+00:00",
+  "journal": {
+    "path": "journal.ndjson",
+    "sha256": "2281cb450fdddcc7e8027a2c4a9b8d58c6abbdf4f2407905df4b6cb8961315cf",
+    "source_sha256": "4010488d6061d70848f23bdd409354176487bc9524ca8b500c081f2269830ea0",
+    "entries": 1
+  },
+  "public_key_sha256": "db3a4a6abbb31474a995bb9901a8bf6fa7db0950cc5d30ddd2d06263eeb09d47",
+  "artifacts": [
+    {
+      "step_id": "controlled-access",
+      "status": "passed",
+      "recorded_at": "2026-08-10T03:02:10+00:00",
+      "path": "artifacts/001-controlled-access-telemetry-redacted.txt",
+      "sha256": "5fb75a3d1b1dc4cc558c99feb8195cc477ab4a9486a82366530cec415ec47dbf",
+      "size": 74
+    }
+  ],
+  "signature": "zt8n5vbl15iRiVHvGw/ucEP1PBRNOwD+IeC+FM9xNbV8T9R06sk/CSl8SLgVFz48H5kfjjUJHTX4umwsHKGICw=="
+}
