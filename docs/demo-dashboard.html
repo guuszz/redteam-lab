@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Web foothold evidence exercise — Red Team Lab</title>
+  <style>
+    :root {
+      --bg:#070b12; --panel:#0d1420; --line:#1e293b;
+      --text:#e2e8f0; --muted:#94a3b8; --green:#22c55e;
+    }
+    * { box-sizing:border-box }
+    body {
+      margin:0; background:var(--bg); color:var(--text);
+      font:15px/1.6 Inter,system-ui,sans-serif;
+    }
+    main { max-width:1120px; margin:auto; padding:48px 24px }
+    header {
+      display:grid; grid-template-columns:1fr 240px; gap:32px; align-items:end;
+    }
+    .eyebrow,.status,code {
+      font:12px ui-monospace,monospace; text-transform:uppercase; letter-spacing:.08em;
+    }
+    .eyebrow { color:var(--green) }
+    h1 { font-size:clamp(36px,6vw,72px); line-height:1; margin:.2em 0 }
+    h2 { margin-top:48px; border-bottom:1px solid var(--line); padding-bottom:10px }
+    .muted,p,li { color:var(--muted) }
+    .coverage strong { font-size:54px; display:block }
+    .bar { height:8px; background:var(--line); border-radius:8px; overflow:hidden }
+    .bar i { display:block; width:75%; height:100%; background:var(--green) }
+    .metrics {
+      display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin:36px 0;
+    }
+    .metric,.step {
+      background:var(--panel); border:1px solid var(--line);
+      border-radius:12px; padding:18px;
+    }
+    .metric strong { font-size:26px; display:block }
+    .metric span { color:var(--muted); text-transform:capitalize }
+    .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px }
+    .step-head { display:flex; justify-content:space-between }
+    .status {
+      color:var(--status); border:1px solid var(--status);
+      border-radius:99px; padding:2px 9px;
+    }
+    a { color:#60a5fa; text-decoration:none }
+    code { color:#64748b }
+    footer {
+      margin-top:60px; color:#64748b;
+      border-top:1px solid var(--line); padding-top:18px;
+    }
+    @media(max-width:720px) {
+      header,.grid { grid-template-columns:1fr }
+      .metrics { grid-template-columns:repeat(2,1fr) }
+    }
+    </style>
+</head>
+<body><main>
+  <header><div>
+    <span class="eyebrow">Red Team Lab / web-foothold-lab</span>
+    <h1>Web foothold evidence exercise</h1>
+    <p>Document a controlled path from service discovery to evidence collection in a private web lab, with explicit stop conditions and cleanup after every phase.</p>
+  </div><div class="coverage">
+    <strong>75%</strong><span class="muted">completed coverage</span>
+    <div class="bar"><i></i></div>
+  </div></header>
+  <div class="metrics"><div class="metric"><strong>3</strong><span>passed</span></div><div class="metric"><strong>0</strong><span>failed</span></div><div class="metric"><strong>1</strong><span>blocked</span></div><div class="metric"><strong>0</strong><span>skipped</span></div><div class="metric"><strong>0</strong><span>pending</span></div></div>
+  <section><h2>Scope</h2><ul><li>192.168.56.10</li><li>api.target.test</li></ul></section>
+  <section><h2>Discovery</h2><div class="grid">
+        <article class="step">
+          <div class="step-head">
+            <span class="status" style="--status:#22c55e">passed</span>
+            <a href="https://attack.mitre.org/techniques/T1046/">T1046</a>
+          </div>
+          <h3>Identify exposed lab services</h3>
+          <p>Record the ports and protocols intentionally exposed by the fixture.</p>
+          <code>service-discovery</code>
+        </article>
+        <article class="step">
+          <div class="step-head">
+            <span class="status" style="--status:#22c55e">passed</span>
+            <a href="https://attack.mitre.org/techniques/T1083/">T1083</a>
+          </div>
+          <h3>Enumerate fixture routes</h3>
+          <p>Map the known web routes and identify the intended training endpoint.</p>
+          <code>web-enumeration</code>
+        </article></div></section><section><h2>Initial Access</h2><div class="grid">
+        <article class="step">
+          <div class="step-head">
+            <span class="status" style="--status:#22c55e">passed</span>
+            <a href="https://attack.mitre.org/techniques/T1190/">T1190</a>
+          </div>
+          <h3>Exercise the synthetic access path</h3>
+          <p>Demonstrate the predefined lab access path and capture minimal evidence.</p>
+          <code>controlled-access</code>
+        </article></div></section><section><h2>Collection</h2><div class="grid">
+        <article class="step">
+          <div class="step-head">
+            <span class="status" style="--status:#f59e0b">blocked</span>
+            <a href="https://attack.mitre.org/techniques/T1074/001/">T1074.001</a>
+          </div>
+          <h3>Package findings and telemetry</h3>
+          <p>Correlate operator evidence with lab telemetry for the final report.</p>
+          <code>evidence-package</code>
+        </article></div></section>
+  <footer>Generated from the append-only Red Team Lab evidence journal.</footer>
+</main></body></html>
