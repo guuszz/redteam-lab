@@ -47,6 +47,22 @@ steps:
       - request.txt
       - response-redacted.txt
     cleanup: Revert the fixture state and invalidate the lab session.
+    finding:
+      title: Synthetic access control weakness confirmed in lab endpoint
+      severity: high
+      description: >-
+        The predefined training endpoint accepted a fixture identifier without enforcing
+        the expected object-level authorization decision for the active lab session.
+      impact: >-
+        A fixture user could retrieve synthetic records assigned to another lab identity,
+        demonstrating unauthorized disclosure within the controlled exercise.
+      remediation: >-
+        Derive object ownership from the authenticated lab session and enforce authorization
+        in the service layer before returning any resource to the requester.
+      cwe: CWE-639
+      owasp: API1:2023 Broken Object Level Authorization
+      references:
+        - https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/
 
   - id: evidence-package
     name: Package findings and telemetry

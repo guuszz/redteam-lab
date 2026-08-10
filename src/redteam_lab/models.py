@@ -8,6 +8,18 @@ import yaml
 
 
 @dataclass(frozen=True)
+class FindingTemplate:
+    title: str
+    severity: str
+    description: str
+    impact: str
+    remediation: str
+    cwe: str | None
+    owasp: str | None
+    references: list[str]
+
+
+@dataclass(frozen=True)
 class Step:
     id: str
     name: str
@@ -16,6 +28,7 @@ class Step:
     objective: str
     expected_evidence: list[str]
     cleanup: str
+    finding: FindingTemplate | None = None
 
 
 @dataclass(frozen=True)
@@ -47,6 +60,21 @@ def load_scenario(path: str | Path) -> tuple[Scenario | None, list[str]]:
     for item in raw_steps:
         if not isinstance(item, dict):
             continue
+        raw_finding = item.get("finding") if isinstance(item.get("finding"), dict) else None
+        finding = (
+            FindingTemplate(
+                title=str(raw_finding.get("title", "")),
+                severity=str(raw_finding.get("severity", "")),
+                description=str(raw_finding.get("description", "")),
+                impact=str(raw_finding.get("impact", "")),
+                remediation=str(raw_finding.get("remediation", "")),
+                cwe=_optional_string(raw_finding.get("cwe")),
+                owasp=_optional_string(raw_finding.get("owasp")),
+                references=_strings(raw_finding.get("references")),
+            )
+            if raw_finding
+            else None
+        )
         steps.append(
             Step(
                 id=str(item.get("id", "")),
@@ -56,6 +84,7 @@ def load_scenario(path: str | Path) -> tuple[Scenario | None, list[str]]:
                 objective=str(item.get("objective", "")),
                 expected_evidence=_strings(item.get("expected_evidence")),
                 cleanup=str(item.get("cleanup", "")),
+                finding=finding,
             )
         )
 
@@ -77,4 +106,8 @@ def _strings(value: Any) -> list[str]:
     if not isinstance(value, list):
         return []
     return [str(item) for item in value if isinstance(item, (str, int, float))]
+
+
+def _optional_string(value: Any) -> str | None:
+    return str(value) if isinstance(value, (str, int, float)) else None
 
