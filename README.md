@@ -24,6 +24,7 @@ O MVP oferece:
 - diário append-only em NDJSON;
 - SHA-256 de cada evidência registrada;
 - acompanhamento do último estado de cada etapa.
+- exportação de achados confirmados para um projeto RedReport completo.
 
 ## Fluxo
 
@@ -92,6 +93,24 @@ controlled-access        pending
 evidence-package         pending
 ```
 
+### 5. Exportar para o RedReport
+
+Depois de registrar como `passed` uma etapa que contém o bloco `finding`:
+
+```bash
+rtl export redreport scenarios/web-foothold.yml \
+  --journal evidence/runs/journal.ndjson \
+  --output reports/generated/redreport-project \
+  --client "Portfolio Lab" \
+  --start-date 2026-08-10 \
+  --end-date 2026-08-10
+
+redreport validate reports/generated/redreport-project
+redreport build reports/generated/redreport-project
+```
+
+O exportador copia as evidências, preserva o SHA-256 no finding e gera `report.yaml` e `findings/RTL-NNN.yaml` no schema nativo do RedReport.
+
 ## Estrutura de cenário
 
 ```yaml
@@ -140,7 +159,7 @@ A CI executa os três gates em cada Pull Request.
 
 ## Roadmap
 
-- [ ] exportador de findings compatível com RedReport;
+- [x] exportador de findings compatível com RedReport;
 - [ ] matriz ATT&CK Navigator por cenário;
 - [ ] manifest assinado de evidências;
 - [ ] adaptadores para logs Windows, Linux e aplicação web;

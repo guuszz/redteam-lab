@@ -8,6 +8,8 @@ from .models import Scenario
 SCENARIO_ID = re.compile(r"^[a-z0-9][a-z0-9-]{2,63}$")
 STEP_ID = re.compile(r"^[a-z0-9][a-z0-9-]{2,63}$")
 TECHNIQUE_ID = re.compile(r"^T\d{4}(?:\.\d{3})?$")
+CWE_ID = re.compile(r"^CWE-\d+$")
+SEVERITIES = {"critical", "high", "medium", "low", "informational"}
 LAB_RANGES = tuple(
     ip_network(value)
     for value in ("127.0.0.0/8", "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16")
@@ -52,6 +54,17 @@ def validate_scenario(scenario: Scenario) -> list[str]:
             errors.append(f"{prefix}.expected_evidence must not be empty")
         if not step.cleanup.strip():
             errors.append(f"{prefix}.cleanup is required")
+        if step.finding:
+            finding = step.finding
+            if len(finding.title.strip()) < 5:
+                errors.append(f"{prefix}.finding.title must contain at least 5 characters")
+            if finding.severity.lower() not in SEVERITIES:
+                errors.append(f"{prefix}.finding.severity is invalid")
+            for field in ("description", "impact", "remediation"):
+                if len(getattr(finding, field).strip()) < 20:
+                    errors.append(f"{prefix}.finding.{field} must contain at least 20 characters")
+            if finding.cwe and not CWE_ID.fullmatch(finding.cwe):
+                errors.append(f"{prefix}.finding.cwe must match CWE-123")
     return errors
 
 
