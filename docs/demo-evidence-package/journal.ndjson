@@ -1,0 +1,1 @@
+{"scenario_id": "web-foothold-lab", "step_id": "controlled-access", "status": "passed", "timestamp": "2026-08-10T03:02:10+00:00", "evidence": "artifacts/001-controlled-access-telemetry-redacted.txt", "evidence_sha256": "5fb75a3d1b1dc4cc558c99feb8195cc477ab4a9486a82366530cec415ec47dbf", "note": "Portable signed package demo"}
